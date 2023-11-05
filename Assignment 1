@@ -132,10 +132,19 @@ def listusernotes(userid) -> []:
 # list note details
 # arguments : noteid
 # returns : a note item as a dictionary
-def notedetails(noteid) -> {}:
-    # TODO: When database is used this function is used to fetch details from there
-    # Now we simply return the information from notes list
-    return notes[noteid]
+def notedetails(noteid) -> dict:
+    #checking for valid noteid range
+    if 0 <= noteid < len(notes):
+        # get the username using userid from the note
+        username = users[note["userid"]]  
+        # add username to the note 
+        note['username'] = username  
+        # TODO: When database is used this function is used to fetch details from there
+        # Now we simply return the information from notes list
+        return note
+    else:
+        print(f"Note with ID {noteid} does not exist.")
+        return {}
 
 # delete a note
 # arguments : noteid
@@ -203,32 +212,45 @@ def main() -> int:
 
                 # Fetch details of each note and show them in menu
                 for n in usernotes:
-                    print(str(number) + ". " + notedetails(n)["subject"])
+                    note = notedetails(n)  # Obtain details for a specific note
+                    if note:  # Ensure that note is not empty
+                        print(f"{number}. {note['subject']}")
+                    else:
+                        print(f"Note with ID {n} does not exist.")
                     number += 1
                 
                 # Show details of one note and show note specific menu
                 selectednote =  input("Enter a number of a note of any other number to exit")
+                selectednote = int(selectednote)
                 if ((int(selectednote) < len(usernotes)) and (int(selectednote) >= 0)):
-                    note = notedetails(usernotes[int(selectednote)])
-                    print("--- --- ---")
-                    print("Subject: " + note["subject"])
-                    print("Date: " + str(note["date"]))
-                    print("Text: " + note["text"])
-                    print("--- --- ---")
-                    # One new menu loop that is used to delete menu item
-                    choice = input("Type \"Delete\" to delete this note or press enter to go back: ")
+                    #check if note it empty
+                   
+                    note_id = usernotes[selectednote]
+                    note = notedetails(note_id)
+                    if note:
+                        print("--- --- ---")
+                        #displays username
+                        print("User: "+note["username"])
+                        print("Subject: " + note["subject"])
+                        print("Date: " + str(note["date"]))
+                        print("Text: " + note["text"])
+                        print("--- --- ---")
+                        # One new menu loop that is used to delete menu item
+                        choice = input("Type \"Delete\" to delete this note or press enter to go back: ")
 
-                    if (choice == "Delete"):
-                        deletenote(usernotes[int(selectednote)])
-                        # Reset choice variable as it is used in other menus
-                        choice = 0
+                        if (choice == "Delete"):
+                            deletenote(usernotes[int(selectednote)])
+                            # Reset choice variable as it is used in other menus
+                            choice = 0
+                        else:
+                            # Reset choice variable as it is used in other menus
+                            choice = 0
+
                     else:
                         # Reset choice variable as it is used in other menus
                         choice = 0
-
                 else:
-                    # Reset choice variable as it is used in other menus
-                    choice = 0
+                    print("Note with this number is not found.")
 
             # Rest of the answers will log user out
             else:
