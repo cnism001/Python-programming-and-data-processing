@@ -109,6 +109,7 @@ def createnote(userid, subject, date, text) -> int:
     except Exception as e:
         #exception message with error message
         print(f"An error occured during creation of the note: {e}")
+        return -1
 
 # list database ids of notes of a user
 # arguments : userid
@@ -174,16 +175,23 @@ def main() -> int:
 
             # Create a new note
             if int(choice) == 1:
+                
                 # Ask for details
                 subject = input("Subject: ")
                 text = input("Text: ")
 
-                # Initially result is set to -1
-                result = -1
+                # Initially result is set to -2
+                
                 # Create a new note
                 result = createnote(userid, subject, datetime.datetime.now(), text)
                 # Print the result
-                print("New note created: " + str(result))
+                if result != -1:
+                    print("New note created: " + str(result))
+                else:
+                    print("Failed to create a new note")
+                    
+                    
+                
 
             # List notes of current user and open a new menu to access them
             elif int(choice) == 2:
