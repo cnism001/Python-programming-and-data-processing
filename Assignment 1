@@ -218,6 +218,11 @@ def main() -> int:
 
             # List notes of current user and open a new menu to access them
             elif int(choice) == 2:
+                print("Retrieve notes options:")
+                print("1. List user notes")
+                print("2. Search for a note")
+
+                choice = input("Choose an option or enter any other number to exit")
                 # Request list of notes
                 usernotes = listusernotes(userid)
 
