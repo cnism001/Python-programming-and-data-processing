@@ -118,13 +118,13 @@ def listusernotes(userid) -> []:
     # Create a new empty list that will contain ids and subject of a user notes
     usernotes = []
     # Database id of a single note
-    dbid = 0
+    n = 0
     # Go through all the notes and populate the new list that contains ids of one user
     for n in notes:
         if n["userid"] == userid:
-            usernotes.append(dbid)
-        # Next dbid to check
-        dbid += 1
+            usernotes.append(n)
+        # Next n to check
+        n += 1
     
     # Return the populated list of notes of one user
     return usernotes
@@ -222,60 +222,83 @@ def main() -> int:
                 print("1. List user notes")
                 print("2. Search for a note")
 
-                choice = input("Choose an option or enter any other number to exit")
+                choice = input("Choose an option or enter any other number to exit: ")
                 # Request list of notes
-                usernotes = listusernotes(userid)
+                if choice == '1':
+                    # List number
+                    number = 0
+                    usernotes = listusernotes(userid)
+                    # Fetch subject of each note and show them in menu
+                    for n in usernotes:
+                        note = notedetails(n)
+                        if note:  # Ensure that note is not empty
+                            print(f"{number}. {note['subject']}")
+                        else:
+                            print(f"Note with ID {n} does not exist.")
+                        number += 1
 
-                # List number
-                number = 0
+                        # Show details of selected note and show note specific menu
+                        try:
+                            selectednote =  input("Enter a number of a note of any other number to exit")
+                            selectednote = int(selectednote)
+                            if ((int(selectednote) < len(usernotes)) and (int(selectednote) >= 0)):
+                                #check if note it empty
+                            
+                                note_id = usernotes[selectednote]
+                                note = notedetails(note_id)
+                                if note:
+                                    print("--- --- ---")
+                                    #displays username
+                                    print("User: "+note["username"])
+                                    print("Subject: " + note["subject"])
+                                    print("Date: " + str(note["date"]))
+                                    print("Text: " + note["text"])
+                                    print("--- --- ---")
+                                    # One new menu loop that is used to delete menu item
+                                    choice = input("Type \"Delete\" to delete this note or press enter to go back: ")
 
-                # Fetch details of each note and show them in menu
-                for n in usernotes:
-                    note = notedetails(n)  # Obtain details for a specific note
-                    if note:  # Ensure that note is not empty
-                        print(f"{number}. {note['subject']}")
-                    else:
-                        print(f"Note with ID {n} does not exist.")
-                    number += 1
-                
-                # Show details of one note and show note specific menu
-                try:
-                    selectednote =  input("Enter a number of a note of any other number to exit")
-                    selectednote = int(selectednote)
-                    if ((int(selectednote) < len(usernotes)) and (int(selectednote) >= 0)):
-                        #check if note it empty
-                    
-                        note_id = usernotes[selectednote]
-                        note = notedetails(note_id)
-                        if note:
+                                    if (choice == "Delete"):
+                                        deletenote(usernotes[int(selectednote)])
+                                       # Reset choice variable as it is used in other menus
+                                        choice = 0
+                                    else:
+                                         # Reset choice variable as it is used in other menus
+                                        choice = 0
+
+                                else:
+                                    # Reset choice variable as it is used in other menus
+                                    choice = 0
+                        
+                        
+                            else:
+                                print("Note with this number is not found.")
+
+                        except ValueError:
+                        # If the input is not a valid integer, print an error message
+                            print("Please enter a valid number.")
+                            # Rest of the answers will log user out
+                elif choice== '2':
+                    search_term = input("Enter search term: ")
+                    search_results = search(userid, search_term)
+
+                    if search_results:
+                        print("Search results:")
+                        for note_id, note in search_results:
                             print("--- --- ---")
                             #displays username
-                            print("User: "+note["username"])
+                            print(f"Note ID: {note_id}")
                             print("Subject: " + note["subject"])
                             print("Date: " + str(note["date"]))
                             print("Text: " + note["text"])
                             print("--- --- ---")
-                            # One new menu loop that is used to delete menu item
-                            choice = input("Type \"Delete\" to delete this note or press enter to go back: ")
-
-                            if (choice == "Delete"):
-                                deletenote(usernotes[int(selectednote)])
-                                # Reset choice variable as it is used in other menus
-                                choice = 0
-                            else:
-                                # Reset choice variable as it is used in other menus
-                                choice = 0
-
-                        else:
-                            # Reset choice variable as it is used in other menus
-                            choice = 0
                     else:
-                        print("Note with this number is not found.")
+                        print("No notes found with the given search term.")
 
-                except ValueError:
-                # If the input is not a valid integer, print an error message
-                    print("Please enter a valid number.")
-                    # Rest of the answers will log user out
+                
+
+                
+                
+                
             else:
                 onmainmenu = False
             
