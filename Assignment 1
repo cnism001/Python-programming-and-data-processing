@@ -155,6 +155,20 @@ def deletenote(noteid) -> bool:
     # Return True for now
     return True
 
+#search a note
+#arguments: userid to only search through notes of that user, search_term
+#returns:search_results
+
+def search(userid,search_term) ->list:
+    #empty list to hold search results
+    search_results=[]
+    #iterates over "notes" using enumerate to get index value "n" and the note "note"
+    for n,note in enumerate(notes):
+        #checking for mathcing userid and if query text is in the note's "subject" or "text" field
+        if note ['userid']==userid and (search_term in note['subject'] or search_term in note['text']):
+            search_results.append((n,note))
+    return search_results
+
 # main function
 def main() -> int:
     # Main loop that will run "forever" - TODO: add exit later
@@ -252,7 +266,7 @@ def main() -> int:
                             choice = 0
                     else:
                         print("Note with this number is not found.")
-                        
+
                 except ValueError:
                 # If the input is not a valid integer, print an error message
                     print("Please enter a valid number.")
