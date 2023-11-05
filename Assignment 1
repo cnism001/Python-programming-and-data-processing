@@ -114,20 +114,18 @@ def createnote(userid, subject, date, text) -> int:
 # list database ids of notes of a user
 # arguments : userid
 # returns : list of user's notes
-def listusernotes(userid) -> []:
+def listusernotes(userid) -> list:
     # Create a new empty list that will contain ids and subject of a user notes
     usernotes = []
-    # Database id of a single note
-    n = 0
     # Go through all the notes and populate the new list that contains ids of one user
-    for n in notes:
-        if n["userid"] == userid:
-            usernotes.append(n)
-        # Next n to check
-        n += 1
-    
+    for x,note in enumerate(notes):
+        if note["userid"] == userid:
+            usernotes.append(x)
     # Return the populated list of notes of one user
-    return usernotes
+    return usernotes    
+    
+    
+    
 
 # list note details
 # arguments : noteid
@@ -151,7 +149,7 @@ def notedetails(noteid) -> dict:
 # returns : True is success or False in case of failure
 def deletenote(noteid) -> bool:
     # Delete a list item
-    notes.pop(noteid)
+    del notes[noteid]
     # Return True for now
     return True
 
@@ -194,10 +192,10 @@ def main() -> int:
             print("2. Retrieve notes")
             print("3. Logout")
 
-            choice = input("Choose and press enter: ")
+            choice_menu = input("Choose and press enter: ")
 
             # Create a new note
-            if int(choice) == 1:
+            if choice_menu == "1":
                 
                 # Ask for details
                 subject = input("Subject: ")
@@ -217,7 +215,7 @@ def main() -> int:
                 
 
             # List notes of current user and open a new menu to access them
-            elif int(choice) == 2:
+            elif choice_menu == "2":
                 print("Retrieve notes options:")
                 print("1. List user notes")
                 print("2. Search for a note")
@@ -229,12 +227,12 @@ def main() -> int:
                     number = 0
                     usernotes = listusernotes(userid)
                     # Fetch subject of each note and show them in menu
-                    for n in usernotes:
-                        note = notedetails(n)
+                    for number in usernotes:
+                        note = notedetails(number)
                         if note:  # Ensure that note is not empty
                             print(f"{number}. {note['subject']}")
                         else:
-                            print(f"Note with ID {n} does not exist.")
+                            print(f"Note with ID {number} does not exist.")
                         number += 1
 
                         # Show details of selected note and show note specific menu
@@ -293,17 +291,9 @@ def main() -> int:
                             print("--- --- ---")
                     else:
                         print("No notes found with the given search term.")
-
-                
-
-                
-                
-                
             else:
                 onmainmenu = False
             
-    # Exit successfully
-    return(0)
 
 # main function entry point
 if __name__ == '__main__':
