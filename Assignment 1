@@ -220,39 +220,43 @@ def main() -> int:
                     number += 1
                 
                 # Show details of one note and show note specific menu
-                selectednote =  input("Enter a number of a note of any other number to exit")
-                selectednote = int(selectednote)
-                if ((int(selectednote) < len(usernotes)) and (int(selectednote) >= 0)):
-                    #check if note it empty
-                   
-                    note_id = usernotes[selectednote]
-                    note = notedetails(note_id)
-                    if note:
-                        print("--- --- ---")
-                        #displays username
-                        print("User: "+note["username"])
-                        print("Subject: " + note["subject"])
-                        print("Date: " + str(note["date"]))
-                        print("Text: " + note["text"])
-                        print("--- --- ---")
-                        # One new menu loop that is used to delete menu item
-                        choice = input("Type \"Delete\" to delete this note or press enter to go back: ")
+                try:
+                    selectednote =  input("Enter a number of a note of any other number to exit")
+                    selectednote = int(selectednote)
+                    if ((int(selectednote) < len(usernotes)) and (int(selectednote) >= 0)):
+                        #check if note it empty
+                    
+                        note_id = usernotes[selectednote]
+                        note = notedetails(note_id)
+                        if note:
+                            print("--- --- ---")
+                            #displays username
+                            print("User: "+note["username"])
+                            print("Subject: " + note["subject"])
+                            print("Date: " + str(note["date"]))
+                            print("Text: " + note["text"])
+                            print("--- --- ---")
+                            # One new menu loop that is used to delete menu item
+                            choice = input("Type \"Delete\" to delete this note or press enter to go back: ")
 
-                        if (choice == "Delete"):
-                            deletenote(usernotes[int(selectednote)])
-                            # Reset choice variable as it is used in other menus
-                            choice = 0
+                            if (choice == "Delete"):
+                                deletenote(usernotes[int(selectednote)])
+                                # Reset choice variable as it is used in other menus
+                                choice = 0
+                            else:
+                                # Reset choice variable as it is used in other menus
+                                choice = 0
+
                         else:
                             # Reset choice variable as it is used in other menus
                             choice = 0
-
                     else:
-                        # Reset choice variable as it is used in other menus
-                        choice = 0
-                else:
-                    print("Note with this number is not found.")
-
-            # Rest of the answers will log user out
+                        print("Note with this number is not found.")
+                        
+                except ValueError:
+                # If the input is not a valid integer, print an error message
+                    print("Please enter a valid number.")
+                    # Rest of the answers will log user out
             else:
                 onmainmenu = False
             
