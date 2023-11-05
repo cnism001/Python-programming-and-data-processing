@@ -61,12 +61,14 @@ def authenticate(username, password) -> int:
         # print(u)
         if u == username:
             if password != passwords[userid]:
+                print("Invalid password")
                 return -1
             else:
                 return userid
         userid += 1
 
     # User was not found.
+    print("User was not found.")
     return -1
 
 # create a new note for a specific user
@@ -74,18 +76,39 @@ def authenticate(username, password) -> int:
 # returns : noteid or -1 if note creation fails
 def createnote(userid, subject, date, text) -> int:
     # TODO: Error handling will be added later. 
-    # Create a note item
-    note = {
-        "userid" : userid,
-        "subject" : subject,
-        "date" : date,
-        "text" : text,
-    }
 
-    # Add note item to notes list
-    notes.append(note)
+    #check if user id is negative or greater than users list length
+    if userid <0 or userid>=len(users):
+        print("Invalid user ID.")
+        return -1
+    #check if the subject field is empty
+    if not subject:
+        print("Subject cannot be empty.")
+        return -1
+    #check if date is of datetime format
+    if not isinstance(date,datetime.datetime):
+        print("Invalid date format.")
+        return -1
+    #check if text is empty
+    if not text:
+        print("Text cannot be empty.")
+        return -1
+    try:
+        # Create a note item
+        note = {
+            "userid" : userid,
+            "subject" : subject,
+            "date" : date,
+            "text" : text,
+        }
 
-    return(len(notes) - 1)
+        # Add note item to notes list
+        notes.append(note)
+
+        return(len(notes) - 1)
+    except Exception as e:
+        #exception message with error message
+        print(f"An error occured during creation of the note: {e}")
 
 # list database ids of notes of a user
 # arguments : userid
